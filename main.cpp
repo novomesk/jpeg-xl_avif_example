@@ -1,6 +1,6 @@
-
 #include "export_avif.h"
 #include "export_jxl.h"
+#include "import_avif.h"
 
 #define TESTIMAGE_WIDTH 4128
 #define TESTIMAGE_HEIGHT 1860
@@ -53,12 +53,18 @@ int main(int argc, char *argv[])
                       metadata_with_extra_data,
                       sizeof(metadata_with_extra_data) - 2); /* avoid last 2 bytes in the array */
 
-    save_jxl_to_file("output.jxl",
-                     TESTIMAGE_WIDTH,
-                     TESTIMAGE_HEIGHT,
-                     generated_picture[0][0],
-                     metadata_with_extra_data,
-                     sizeof(metadata_with_extra_data) - 2); /* avoid last 2 bytes in the array */
+    uint16_t *loaded_pixels = nullptr;
+    uint32_t loaded_width = 0;
+    uint32_t loaded_height = 0;
+
+    if (load_avif_from_file("output.avif", &loaded_width, &loaded_height, &loaded_pixels)) {
+        save_jxl_to_file("output.jxl",
+                         loaded_width,
+                         loaded_height,
+                         loaded_pixels,
+                         metadata_with_extra_data,
+                         sizeof(metadata_with_extra_data) - 2); /* avoid last 2 bytes in the array */
+    }
 
     return 0;
 }
