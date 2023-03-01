@@ -8,7 +8,7 @@ Required libraries:
 
 How to compile:
 
-`g++ -Wall -Og *.cpp -lavif -ljxl -ljxl_threads -o example`
+`g++ -Wall -Og *.cpp -lavif -ljxl -ljxl_threads -lexiv2 -o example`
 
 Run:
 `./example`
