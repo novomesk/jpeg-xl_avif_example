@@ -1,6 +1,7 @@
 #include "export_avif.h"
 #include "export_jxl.h"
 #include "import_avif.h"
+#include "import_jxl.h"
 
 #define TESTIMAGE_WIDTH 4128
 #define TESTIMAGE_HEIGHT 1860
@@ -64,7 +65,12 @@ int main(int argc, char *argv[])
                          loaded_pixels,
                          metadata_with_extra_data,
                          sizeof(metadata_with_extra_data) - 2); /* avoid last 2 bytes in the array */
+        delete[] loaded_pixels;
     }
 
+    if (load_jxl_from_file("jpegxl-logo.jxl", &loaded_width, &loaded_height, &loaded_pixels)) {
+        save_jxl_to_file("output2.jxl", loaded_width, loaded_height, loaded_pixels, nullptr, 0);
+        delete[] loaded_pixels;
+    }
     return 0;
 }
