@@ -3,7 +3,7 @@
 #include "import_avif.h"
 #include "import_jxl.h"
 
-#include <exiv2/exiv2.hpp>
+#include "exiv_wrapper.h"
 
 #define TESTIMAGE_WIDTH 4128
 #define TESTIMAGE_HEIGHT 1860
@@ -37,25 +37,10 @@ int main(int argc, char *argv[])
     }
 
     Exiv2::Blob blob;
-
-    try {
-        Exiv2::ExifData exif_data;
-        exif_data["Exif.Photo.PixelXDimension"] = static_cast<uint32_t>(TESTIMAGE_WIDTH);
-        exif_data["Exif.Image.ImageWidth"] = static_cast<uint32_t>(TESTIMAGE_WIDTH);
-        exif_data["Exif.Photo.PixelYDimension"] = static_cast<uint32_t>(TESTIMAGE_HEIGHT);
-        exif_data["Exif.Image.ImageLength"] = static_cast<uint32_t>(TESTIMAGE_HEIGHT);
-        exif_data["Exif.Image.Software"] = "PhotonCamera";
-
-        Exiv2::ExifParser::encode(blob, Exiv2::littleEndian, exif_data);
-
-    } catch (Exiv2::Error &e) {
-        LOGE("EXIV2 error: %d %s", e.code(), e.what());
-    }
-
     const uint8_t *metadata_to_save = nullptr;
     size_t metadata_size = 0;
 
-    if (blob.size() > 0) {
+    if (prerare_exif_blob(blob, TESTIMAGE_WIDTH, TESTIMAGE_HEIGHT)) {
         metadata_to_save = blob.data();
         metadata_size = blob.size();
     } else {
